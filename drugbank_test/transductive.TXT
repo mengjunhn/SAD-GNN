@@ -1,0 +1,88 @@
+Namespace(batch_size=512, data_size_ratio=1, kge_dim=128, lr=0.001, n_atom_feats=55, n_atom_hid=128, n_epochs=200, neg_samples=1, pkl_name='transductive_drugbank.pkl', rel_total=86, use_cuda=True, weight_decay=0.0005)
+Training with 122756 samples, validating with 30690, and testing with 38362
+MVN_DDI(
+  (initial_norm): LayerNorm(55, mode=graph)
+  (net_norms): ModuleList(
+    (0): LayerNorm(128, mode=graph)
+    (1): LayerNorm(128, mode=graph)
+  )
+  (block0): MVN_DDI_Block(
+    (drug_encoder): DrugEncoder(
+      (mlp): Sequential(
+        (0): Linear(in_features=55, out_features=128, bias=True)
+      )
+      (line_graph): DMPNN(
+        (lin_u): Linear(in_features=128, out_features=128, bias=False)
+        (lin_v): Linear(in_features=128, out_features=128, bias=False)
+        (lin_edge): Linear(in_features=6, out_features=128, bias=False)
+        (att): GlobalAttentionPool(
+          (conv): GraphConv(128, 1)
+        )
+        (lin_gout): Linear(in_features=128, out_features=128, bias=True)
+        (lin_block): LinearBlock(
+          (lin1): Sequential(
+            (0): Linear(in_features=128, out_features=128, bias=True)
+          )
+        )
+      )
+    )
+    (intraAtt): IntraGraphAttention(
+      (intra): GATConv(128, 32, heads=2)
+    )
+    (interAtt): InterGraphAttention(
+      (inter): GATConv((128, 128), 32, heads=2)
+    )
+    (readout): SAGPooling(GraphConv, 128, min_score=-1, multiplier=1.0)
+    (norm0): LayerNorm((55,), eps=1e-05, elementwise_affine=True)
+    (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+    (w): Linear(in_features=55, out_features=128, bias=True)
+  )
+  (block1): MVN_DDI_Block(
+    (drug_encoder): DrugEncoder(
+      (mlp): Sequential(
+        (0): Linear(in_features=128, out_features=128, bias=True)
+      )
+      (line_graph): DMPNN(
+        (lin_u): Linear(in_features=128, out_features=128, bias=False)
+        (lin_v): Linear(in_features=128, out_features=128, bias=False)
+        (lin_edge): Linear(in_features=6, out_features=128, bias=False)
+        (att): GlobalAttentionPool(
+          (conv): GraphConv(128, 1)
+        )
+        (lin_gout): Linear(in_features=128, out_features=128, bias=True)
+        (lin_block): LinearBlock(
+          (lin1): Sequential(
+            (0): Linear(in_features=128, out_features=128, bias=True)
+          )
+        )
+      )
+    )
+    (intraAtt): IntraGraphAttention(
+      (intra): GATConv(128, 32, heads=2)
+    )
+    (interAtt): InterGraphAttention(
+      (inter): GATConv((128, 128), 32, heads=2)
+    )
+    (readout): SAGPooling(GraphConv, 128, min_score=-1, multiplier=1.0)
+    (norm0): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+    (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+    (w): Linear(in_features=128, out_features=128, bias=True)
+  )
+  (co_attention): CoAttentionLayer()
+  (KGE): RESCAL(86, torch.Size([86, 16384]))
+)
+
+
+训练200 epoch的测试集上的结果：
+============================== Test Result ==============================
+		test_acc: 0.8691, test_auc_roc: 0.9586,test_f1: 0.8819,test_precision:0.8035
+		test_recall: 0.9771, test_int_ap: 0.9522,test_ap: 0.9522
+
+============================== Test Result ==============================（原）
+		test_acc: 0.9124, test_auc_roc: 0.9675,test_f1: 0.9134,test_precision:0.9034
+		test_recall: 0.9236, test_int_ap: 0.9629,test_ap: 0.9629
+
+
+		 ============================= Test Result ==============================(block=2)
+		test_acc: 0.8395, test_auc_roc: 0.9464,test_f1: 0.8592,test_precision:0.7653
+		test_recall: 0.9794, test_int_ap: 0.9390,test_ap: 0.9390
